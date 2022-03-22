@@ -1,0 +1,18 @@
+   - name: Start workflow if JIRA_CREATE_COMMENT_AUTO is enabled
+        if: env.JIRA_CREATE_COMMENT_AUTO == 'true'
+        run: echo "Starting workflow"
+
+      - name: Check GitHub Issue type
+        if: env.JIRA_CREATE_COMMENT_AUTO == 'true'
+        id: github_issue_type
+        uses: actions/github-script@v2.0.0
+        with:
+          result-encoding: string
+          script: |
+            // An Issue can be a pull request, you can identify pull requests by the pull_request key
+            const pullRequest = ${{ toJson(github.event.issue.pull_request) }}
+            if(pullRequest) {
+              return "pull-request"
+            } else {
+              return "issue"
+            }
